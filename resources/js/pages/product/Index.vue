@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from '
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-
+import { deleteProduct } from '@/composables/useProduct.js'
 
 //const breadcrumbs: BreadcrumbItem[] = [
 const breadcrumbs = [
@@ -27,6 +27,9 @@ defineProps({
         required: true
     }
 });
+
+
+
 </script>
 
 <template>
@@ -36,6 +39,13 @@ defineProps({
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
         <Card>
             <CardContent>
+                <div class="mt-3">
+                    <Link :href="route('products.create')" :class="buttonVariants({variant: 'outline'})">
+                        Add product
+                        <!-- time 50:00 -->
+                    </Link>
+                </div>
+
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -61,7 +71,7 @@ defineProps({
                                 <Button variant="ghost"  size="icon">
                                     <Pencil className="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost"  size="icon">
+                                <Button variant="destructive"  size="icon" @click="deleteProduct(product.id)">
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </TableCell>

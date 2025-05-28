@@ -5,7 +5,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
+import { deleteProduct } from '@/composables/useProduct.js'
 
 const breadcrumbs = [
     {
@@ -72,7 +72,7 @@ defineProps({
                             <Link :href="route('products.index')" :class="buttonVariants({variant: 'outline'})">Back</Link>
                             <div>
                                 <Link :href="route('products.edit', product)" :class="buttonVariants({variant: 'default'})">Edit</Link>
-                                <Button class="ml-2" variant="destructive">Delete</Button>
+                                <Button class="ml-2" variant="destructive" @click="deleteProduct(product.id)">Delete</Button>
                             </div>
                         </div>
                     </CardContent>
