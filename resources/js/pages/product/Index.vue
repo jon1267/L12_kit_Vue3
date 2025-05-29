@@ -42,7 +42,6 @@ defineProps({
                 <div class="mt-3">
                     <Link :href="route('products.create')" :class="buttonVariants({variant: 'outline'})">
                         Add product
-                        <!-- time 50:00 -->
                     </Link>
                 </div>
 
@@ -53,26 +52,28 @@ defineProps({
                             <TableHead class="p-4">Category</TableHead>
                             <TableHead class="p-4">Price</TableHead>
                             <TableHead class="p-4">Weight</TableHead>
-                            <TableHead class="w-[120px]">Action</TableHead>
+                            <TableHead class="w-[140px]">Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         <TableRow v-for="product in products" :key="product.id">
                             <TableCell class="p-4">{{ product.name }}</TableCell>
                             <TableCell class="p-4">{{ product.category.name }}</TableCell>
-                            <TableCell class="p-4">{{ product.price }}</TableCell>
+                            <TableCell class="p-4">$ {{ product.price / 100 }}</TableCell>
                             <TableCell class="p-4">{{ product.weight }}</TableCell>
-                            <TableCell className="space-x-1">
-                                <Button variant="ghost"  size="icon" >
+                            <TableCell class="space-x-1">
+                                <Button variant="ghost"  size="icon" class="mr-2">
                                     <Link :href="route('products.show', product)" :class="buttonVariants({variant: 'secondary'})">
-                                        <Eye className="h-4 w-4" />
+                                        <Eye />
                                     </Link>
                                 </Button>
-                                <Button variant="ghost"  size="icon">
-                                    <Pencil className="h-4 w-4" />
+                                <Button variant="ghost"  size="icon" class="mr-1">
+                                    <Link :href="route('products.edit', product)" :class="buttonVariants({variant: 'default'})">
+                                        <Pencil />
+                                    </Link>
                                 </Button>
                                 <Button variant="destructive"  size="icon" @click="deleteProduct(product.id)">
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2  />
                                 </Button>
                             </TableCell>
                         </TableRow>

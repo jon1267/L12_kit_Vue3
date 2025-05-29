@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\Category;
+//use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRequest;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -27,15 +29,21 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::orderBy('name')->get();
+        return Inertia::render('product/Create', [
+            'categories' => $categories
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        //Product::create($request->validated() + ['user_id' => $request->user()->id]);  //1 st way
+        $request->user()->products()->create($request->validated()); // 2nd way
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -44,7 +52,7 @@ class ProductController extends Controller
     //public function show(string $id)
     public function show(Product $product)
     {
-        // time 27:00 таблица не та? но чуть поправил ...
+        // таблица не та? но чуть поправил ...
         $product->load('category'); //dd($product);
 
         return Inertia::render('product/Show', [
@@ -55,9 +63,15 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Product $product)
     {
-        //
+        // time 1:19:25
+
+        //return Inertia::render('product/Edit', [
+        //    'product' => $product,
+        //    'categories' => Category::orderBy('name')->get(),
+        //]);
+
     }
 
     /**
@@ -73,7 +87,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // time 38:30
         $product->delete();
         return redirect()->route('products.index');
     }

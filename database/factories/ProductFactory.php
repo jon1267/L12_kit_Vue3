@@ -24,7 +24,7 @@ class ProductFactory extends Factory
         return [
             'name'  => fake()->sentence(),
             'brand' => fake()->sentence(2),
-            'price' => fake()->randomDigitNot(0),
+            'price' => fake()->randomDigitNot(0) * 100,
             'weight' => fake()->randomFloat(2, 20, 50),
             'description' => fake()->text(),
             'user_id' => fake()->randomElement($users),

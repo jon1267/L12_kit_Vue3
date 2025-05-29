@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 //import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { deleteProduct } from '@/composables/useProduct.js'
@@ -56,7 +55,7 @@ defineProps({
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="w-32 font-semibold">Price</div>
-                            <div>$ {{ product.price}}</div>
+                            <div>$ {{ product.price / 100}}</div>
                         </div>
 
                         <div class="flex items-center space-x-4">
