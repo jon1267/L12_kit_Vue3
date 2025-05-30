@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 //use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -41,7 +42,17 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         //Product::create($request->validated() + ['user_id' => $request->user()->id]);  //1 st way
-        $request->user()->products()->create($request->validated()); // 2nd way
+        //$request->user()->products()->create($request->validated()); // 2nd way
+
+        $payload = $request->validated();
+        if ($request->hasFile('image')) {
+            $folder = "images/" . date('Y/m'); // "images";
+            $fileName = Str::uuid() . '.' . $request->file('image')->getClientOriginalName();
+            $path =  $request->file('image')->storeAs($folder, $fileName);
+            $payload['image'] = $path;
+        }
+
+        $request->user()->products()->create($payload);
 
         return redirect()->route('products.index');
     }
