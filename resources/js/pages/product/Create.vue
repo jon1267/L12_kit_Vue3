@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import InputError from '@/components/InputError.vue';
 import { toast } from 'vue-sonner';
 import { Loader } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 defineProps({
     categories: {
@@ -29,12 +30,15 @@ const form = useForm({
     weight: null,
 });
 
+const imagePreview = ref(null);
+
 const handleFileChange = (event) => {
     const image = event.target.files[0];
     if (!image) {
         return;
     }
     form.image = image;
+    imagePreview.value = URL.createObjectURL(image);
 }
 
 const handleSubmit = () => {
@@ -121,7 +125,7 @@ const breadcrumbs = [
                                 <Input type="file" id="image" @change="handleFileChange" />
 
                                 <!-- (!!!) time 9:20 -->
-                                <img class="w-30" :src="form.image" />
+                                <img class="w-30" :src="imagePreview" v-if="imagePreview" />
 
                                 <!--<progress v-if="form.progress"  :value="form.progress.percentage" max="100">
                                     {{ form.progress.percentage }}
