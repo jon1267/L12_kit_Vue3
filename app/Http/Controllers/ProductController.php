@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 //use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -46,10 +47,7 @@ class ProductController extends Controller
 
         $payload = $request->validated();
         if ($request->hasFile('image')) {
-            $folder = "images/" . date('Y/m'); // "images";
-            $fileName = Str::uuid() . '.' . $request->file('image')->getClientOriginalName();
-            $path =  $request->file('image')->storeAs($folder, $fileName);
-            $payload['image'] = $path;
+            $payload['image'] = $this->handleUploadedFile($request);
         }
 
         $request->user()->products()->create($payload);
@@ -57,10 +55,16 @@ class ProductController extends Controller
         return redirect()->route('products.index');
     }
 
+    protected function handleUploadedFile($request)
+    {
+        $folder = "images/" . date('Y/m'); // "images";
+        $fileName = Str::uuid() . '.' . $request->file('image')->getClientOriginalName();
+        return  $request->file('image')->storeAs($folder, $fileName);
+    }
+
     /**
      * Display the specified resource.
      */
-    //public function show(string $id)
     public function show(Product $product)
     {
         // таблица не та? но чуть поправил ...
@@ -87,10 +91,20 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    //public function update(Request $request, string $id)
     public function update(StoreProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $payload = $request->except('image');
+        if ($request->hasFile('image')) {
+            // remove old image
+            if (!is_null($product->image) && Storage::exists($product->image)) {
+                Storage::delete($product->image);
+            }
+
+            // upload new image
+            $payload['image'] = $this->handleUploadedFile($request);
+        }
+
+        $product->update($payload);
 
         return redirect()->route('products.index');
     }
@@ -100,6 +114,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        // remove image if exists
+        if (!is_null($product->image) && Storage::exists($product->image)) {
+            Storage::delete($product->image);
+        }
         $product->delete();
         return redirect()->route('products.index');
     }

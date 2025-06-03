@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 //import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/InputError.vue';
 import { toast } from 'vue-sonner';
+import { ref } from 'vue';
 
 const props = defineProps({
     categories: {
@@ -31,10 +32,25 @@ const form = useForm({
     description: product.description,
     price: product.price / 100,
     weight: product.weight,
+    image: null,
 });
 
+const imagePreview = ref(null);
+
+const handleFileChange = (event) => {
+    const image = event.target.files[0];
+    if (!image) {
+        return;
+    }
+    form.image = image;
+    imagePreview.value = URL.createObjectURL(image);
+}
+
 const handleSubmit = () => {
-    form.put(route('products.update', product), {
+    router.post(route('products.update', product), {
+        ...form.data(),
+        _method: 'PUT',
+    }, {
         preserveScroll: true,
         onSuccess: () => toast.success('Product updated successfully.'),
     });
@@ -109,6 +125,16 @@ const breadcrumbs = [
                                     <Input id="weight" v-model="form.weight" />
                                     <InputError :message="form.errors.weight" />
                                 </div>
+                            </div>
+
+                            <div class="grid w-full gap-2">
+                                <Label for="image">Image</Label>
+                                <Input type="file" id="image" @change="handleFileChange" />
+                                <div class="flex gap-2">
+                                    <img class="w-30" :src="product.image_url" v-if="product.image_url" />
+                                    <img class="w-30" :src="imagePreview" v-if="imagePreview" />
+                                </div>
+                                <InputError :message="form.errors.image" />
                             </div>
 
                             <div class="grid w-full gap-2">

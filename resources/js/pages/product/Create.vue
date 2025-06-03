@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 //import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -124,7 +124,6 @@ const breadcrumbs = [
                                 <Label for="image">Image</Label>
                                 <Input type="file" id="image" @change="handleFileChange" />
 
-                                <!-- (!!!) time 9:20 -->
                                 <img class="w-30" :src="imagePreview" v-if="imagePreview" />
 
                                 <!--<progress v-if="form.progress"  :value="form.progress.percentage" max="100">

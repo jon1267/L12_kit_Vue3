@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
@@ -30,7 +31,8 @@ class Product extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image ? Storage::url($this->image) : '',
+            //get: fn () => $this->image ? Storage::url($this->image) : '',
+            get: fn () => $this->image ? Storage::temporaryUrl($this->image, now()->addMinute()) : '',
         );
     }
 }

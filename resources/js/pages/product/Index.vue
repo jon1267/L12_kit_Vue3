@@ -52,6 +52,7 @@ defineProps({
                             <TableHead class="p-4">Category</TableHead>
                             <TableHead class="p-4">Price</TableHead>
                             <TableHead class="p-4">Weight</TableHead>
+                            <TableHead class="p-4">Image</TableHead>
                             <TableHead class="w-[140px]">Action</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -61,6 +62,9 @@ defineProps({
                             <TableCell class="p-4">{{ product.category.name }}</TableCell>
                             <TableCell class="p-4">$ {{ product.price / 100 }}</TableCell>
                             <TableCell class="p-4">{{ product.weight }}</TableCell>
+                            <TableCell class="p-4">
+                                <img class="w-20" :src="product.image_url" v-if="product.image_url">
+                            </TableCell>
                             <TableCell class="space-x-1">
                                 <Button variant="ghost"  size="icon" class="mr-2">
                                     <Link :href="route('products.show', product)" :class="buttonVariants({variant: 'secondary'})">

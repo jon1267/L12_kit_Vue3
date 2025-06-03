@@ -63,6 +63,12 @@ defineProps({
                             <div>{{ product.weight}}</div>
                         </div>
                         <div class="flex space-x-4">
+                            <div class="w-32 font-semibold">Image</div>
+                            <div class="flex-1">
+                                <img class="w-20" :src="product.image_url" v-if="product.image_url">
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
                             <div class="w-32 font-semibold">Description</div>
                             <div class="flex-1">{{ product.description}}</div>
                         </div>
