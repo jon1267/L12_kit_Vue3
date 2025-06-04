@@ -21,13 +21,13 @@ const breadcrumbs = [
 ];
 
 //defineProps<{name?: string;}>();
-defineProps({
+const props = defineProps({
     products: {
-        type: Array,
+        type: Object, //Array, was before pagination
         required: true
     }
 });
-
+console.log(props.products);
 
 
 </script>
@@ -48,6 +48,7 @@ defineProps({
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead class="p-4">#</TableHead>
                             <TableHead class="p-4">Name</TableHead>
                             <TableHead class="p-4">Category</TableHead>
                             <TableHead class="p-4">Price</TableHead>
@@ -57,7 +58,8 @@ defineProps({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow v-for="product in products" :key="product.id">
+                        <TableRow v-for="(product, index) in products.data" :key="product.id">
+                            <TableCell class="p-4">{{ products.from + index }}</TableCell>
                             <TableCell class="p-4">{{ product.name }}</TableCell>
                             <TableCell class="p-4">{{ product.category.name }}</TableCell>
                             <TableCell class="p-4">$ {{ product.price / 100 }}</TableCell>
@@ -83,6 +85,42 @@ defineProps({
                         </TableRow>
                     </TableBody>
                 </Table>
+
+                <!-- simplePaginate
+                <div class="mt-3 flex justify-between items-center">
+                    <Link
+                        :href="products.prev_page_url ?? ''"
+                        :disabled="!products.prev_page_url"
+                        :class="[buttonVariants({variant: 'outline'}), !products.prev_page_url ? 'pointer-events-none opacity-50' : '']"
+                    >
+                        Prev
+                    </Link>
+                    <Link
+                        :href="products.next_page_url ?? ''"
+                        :disabled="products.next_page_url === null"
+                        :class="[buttonVariants({variant: 'outline'}), !products.next_page_url ? 'pointer-events-none opacity-50' : '']"
+                    >
+                        Next
+                    </Link>
+                </div>
+                -->
+
+                <div class="mt-3 flex justify-between items-center gap-1">
+                    <!-- normal pagination -->
+                    <span> Showing <strong>{{products.from}} - {{products.to}}</strong> of <strong>{{ products.total }}</strong> </span>
+                    <div class="space-x-1">
+                        <Link
+                            v-for="(link, index) in products.links"
+                            :key="index"
+                            v-html="link.label"
+                            :href="link.url ?? ''"
+                            :class="[
+                                buttonVariants({variant: link.active ? 'default' : 'outline'}),
+                                !link.url ? 'pointer-events-none opacity-50' : ''
+                        ]">
+                        </Link>
+                    </div>
+                </div>
             </CardContent>
         </Card>
         </div>

@@ -19,7 +19,8 @@ class ProductController extends Controller
     {
         $products = auth()->user()
             ->products()->with('category')
-            ->latest()->get(); //dd($products);
+            ->latest()
+            ->paginate(3); //->simplePaginate(5); //->get(); //dd($products);
 
         return Inertia::render('product/Index', [
             'products' => $products
