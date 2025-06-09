@@ -37,3 +37,9 @@ export interface User {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+export type PostForm = {
+    title: string;
+    content: string;
+    image: File | null;
+};
