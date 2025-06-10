@@ -12,20 +12,23 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Create Post',
+        title: 'Edit Post',
         href: '/posts',
     },
 ];
 
+const { currentPost } = defineProps<{
+    currentPost: Post;
+}>();
 
 const form = useForm<PostForm>({
-    title: '',
-    content: '',
-    image: null,
+    title: currentPost.title,
+    content: currentPost.content,
+    image:  null,
 });
 
 const submit = () => {
-    form.post(route('posts.store'));
+    form.post(route('posts.update'));
 };
 
 const handleImageInput = (event: Event) => {
@@ -40,7 +43,7 @@ const handleImageInput = (event: Event) => {
 </script>
 
 <template>
-    <Head title="Create Post" />
+    <Head title="Update Post" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -49,7 +52,7 @@ const handleImageInput = (event: Event) => {
             <div class="min-w-2xl mx-auto p-6 mt-8 ">
                 <Card class="mt-3">
                     <CardHeader>
-                        <CardTitle>Add New Post</CardTitle>
+                        <CardTitle>Update Post</CardTitle>
                     </CardHeader>
                     <CardContent class="space-y-3">
                         <form @submit.prevent="submit" class="flex flex-col gap-6">
@@ -93,7 +96,7 @@ const handleImageInput = (event: Event) => {
 
                                 <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
                                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                                    Create
+                                    Update
                                 </Button>
                             </div>
 

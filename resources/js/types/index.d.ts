@@ -43,3 +43,11 @@ export type PostForm = {
     content: string;
     image: File | null;
 };
+
+export type Post = {
+    id: number;
+    title: string;
+    slug: string;
+    content: string;
+    image: string;
+};

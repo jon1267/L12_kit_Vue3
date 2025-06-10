@@ -13,7 +13,9 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-//import PlaceholderPattern from '../../components/PlaceholderPattern.vue';
+import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { deleteProduct } from '@/composables/useProduct';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,6 +23,9 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/posts',
     },
 ];
+
+defineProps<{ posts: Post[]}>();
+
 </script>
 
 <template>
@@ -36,28 +41,40 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
 
                 <Table>
-                    <TableCaption>A list of your recent invoices.</TableCaption>
+                    <TableCaption>A list of posts.</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead class="w-[100px]">
-                                Invoice
+                                ID
                             </TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Method</TableHead>
-                            <TableHead class="text-right">
-                                Amount
-                            </TableHead>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Image</TableHead>
+                            <TableHead>Content</TableHead>
+                            <TableHead class="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell class="font-medium">
-                                INV001
+                        <TableRow v-for="post in posts" :key="post.id">
+                            <TableCell class="font-medium">{{ post.id }}</TableCell>
+                            <TableCell>{{ post.title }}</TableCell>
+                            <TableCell>
+                                <img :src="post.image" alt="post image" class="h-12 w-12 rounded object-cover" />
                             </TableCell>
-                            <TableCell>Paid</TableCell>
-                            <TableCell>Credit Card</TableCell>
+                            <TableCell>{{ post.content }}</TableCell>
                             <TableCell class="text-right">
-                                $250.00
+                                <Button variant="ghost"  size="icon" class="mr-2">
+                                    <Link :href="route('posts.show', post.id)" class="text-blue-500 hover:text-blue-700" >
+                                        <Eye class="inline-block mr-2" />
+                                    </Link>
+                                </Button>
+                                <Button variant="ghost"  size="icon" class="mr-1">
+                                    <Link :href="route('posts.edit', post.id)" class="text-indigo-500 hover:text-indigo-700">
+                                        <Pencil class="inline-block mr-2" />
+                                    </Link>
+                                </Button>
+                                <Button variant="destructive"  size="icon" >
+                                    <Trash2  />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     </TableBody>

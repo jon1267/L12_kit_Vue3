@@ -16,7 +16,10 @@ class PostController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('posts/Index');
+        return Inertia::render('posts/Index', [
+            //'posts' => auth()->user()->posts()->latest()->get(), // posts of the authenticated user
+            'posts' => Post::latest()->get(), // all posts
+        ]);
     }
 
 
@@ -64,14 +67,17 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         // time 29:30
+        return Inertia::render('posts/Edit', [
+            'currentPost' => $post,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        // time 35:01
     }
 
     /**
