@@ -39,7 +39,7 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $data['slug'] = Str::slug($data['title']);
@@ -77,7 +77,28 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        // time 35:01
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $data['slug'] = Str::slug($data['title']);
+        $data['image'] = $post->image; // keep the old image if not updated
+
+        if ($request->hasFile('image')) {
+
+            // Check if the old image exists and delete it
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
+            }
+
+            $data['image'] = Storage::disk('public')->put('posts', $request->file('image')); // save new image
+        }
+
+        $post->update($data);
+        // time 39:00
+        return to_route('posts.index')->with('success', 'Post updated successfully.');
     }
 
     /**

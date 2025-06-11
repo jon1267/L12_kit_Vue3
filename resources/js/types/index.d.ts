@@ -42,6 +42,7 @@ export type PostForm = {
     title: string;
     content: string;
     image: File | null;
+    _method?: string;
 };
 
 export type Post = {

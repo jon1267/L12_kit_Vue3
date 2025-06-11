@@ -25,10 +25,11 @@ const form = useForm<PostForm>({
     title: currentPost.title,
     content: currentPost.content,
     image:  null,
+    _method: 'PUT',
 });
 
 const submit = () => {
-    form.post(route('posts.update'));
+    form.post(route('posts.update', currentPost.id));
 };
 
 const handleImageInput = (event: Event) => {

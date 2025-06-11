@@ -48,8 +48,8 @@ defineProps<{ posts: Post[]}>();
                                 ID
                             </TableHead>
                             <TableHead>Title</TableHead>
-                            <TableHead>Image</TableHead>
                             <TableHead>Content</TableHead>
+                            <TableHead>Image</TableHead>
                             <TableHead class="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -57,10 +57,10 @@ defineProps<{ posts: Post[]}>();
                         <TableRow v-for="post in posts" :key="post.id">
                             <TableCell class="font-medium">{{ post.id }}</TableCell>
                             <TableCell>{{ post.title }}</TableCell>
-                            <TableCell>
-                                <img :src="post.image" alt="post image" class="h-12 w-12 rounded object-cover" />
-                            </TableCell>
                             <TableCell>{{ post.content }}</TableCell>
+                            <TableCell>
+                                <img :src="'storage/'+post.image" v-if="post.image" alt="post image" class="h-12 w-12 rounded object-cover" />
+                            </TableCell>
                             <TableCell class="text-right">
                                 <Button variant="ghost"  size="icon" class="mr-2">
                                     <Link :href="route('posts.show', post.id)" class="text-blue-500 hover:text-blue-700" >
