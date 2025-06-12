@@ -12,10 +12,12 @@ import {
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { deleteProduct } from '@/composables/useProduct';
+//import { deleteProduct } from '@/composables/useProduct';
+import { onMounted, watch } from 'vue';
+import { toast } from 'vue-sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,6 +27,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 defineProps<{ posts: Post[]}>();
+
+interface  Flash {
+    success?: null;
+    error?: null;
+}
+
+onMounted(() => {
+    watch(() => usePage<{ flash: Flash }>().props.flash,
+        (flash: Flash) => {
+            if (flash.success) {
+                toast.success(flash.success);
+                flash.success = null;
+            }
+        }, { immediate: true });
+})
 
 </script>
 
@@ -59,21 +76,24 @@ defineProps<{ posts: Post[]}>();
                             <TableCell>{{ post.title }}</TableCell>
                             <TableCell>{{ post.content }}</TableCell>
                             <TableCell>
-                                <img :src="'storage/'+post.image" v-if="post.image" alt="post image" class="h-12 w-12 rounded object-cover" />
+                                <img :src="post.image" v-if="post.image" alt="post image" class="h-12 w-12 rounded object-cover" />
                             </TableCell>
-                            <TableCell class="text-right">
-                                <Button variant="ghost"  size="icon" class="mr-2">
+                            <TableCell class="flex justify-end space-x-1">
+                                <!--<Button variant="ghost"  size="icon" class="mr-2">
                                     <Link :href="route('posts.show', post.id)" class="text-blue-500 hover:text-blue-700" >
                                         <Eye class="inline-block mr-2" />
                                     </Link>
-                                </Button>
-                                <Button variant="ghost"  size="icon" class="mr-1">
-                                    <Link :href="route('posts.edit', post.id)" class="text-indigo-500 hover:text-indigo-700">
-                                        <Pencil class="inline-block mr-2" />
+                                </Button>-->
+                                <Button variant="default"  size="icon">
+                                    <!-- class="text-indigo-500 hover:text-indigo-700" -->
+                                    <Link :href="route('posts.edit', post.id)" >
+                                        <Pencil class="inline-block " />
                                     </Link>
                                 </Button>
                                 <Button variant="destructive"  size="icon" >
-                                    <Trash2  />
+                                    <Link :href="route('posts.destroy', post.id)" method="delete" as="button" >
+                                        <Trash2 class="inline-block " />
+                                    </Link>
                                 </Button>
                             </TableCell>
                         </TableRow>

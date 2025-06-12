@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,9 +17,11 @@ class PostController extends Controller
      */
     public function index(): Response
     {
+        $posts = Post::latest()->get(); //'posts' => auth()->user()->posts()->latest()->get();
+
         return Inertia::render('posts/Index', [
-            //'posts' => auth()->user()->posts()->latest()->get(), // posts of the authenticated user
-            'posts' => Post::latest()->get(), // all posts
+            //not forget JsonResource::withoutWrapping(); in boot AppServiceProvider
+            'posts' => PostResource::collection($posts),
         ]);
     }
 
@@ -68,7 +71,7 @@ class PostController extends Controller
     {
         // time 29:30
         return Inertia::render('posts/Edit', [
-            'currentPost' => $post,
+            'currentPost' => new PostResource($post),
         ]);
     }
 
@@ -97,15 +100,21 @@ class PostController extends Controller
         }
 
         $post->update($data);
-        // time 39:00
+
         return to_route('posts.index')->with('success', 'Post updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        if ($post->image && Storage::disk('public')->exists($post->image)) {
+            Storage::disk('public')->delete($post->image);
+        }
+
+        $post->delete();
+
+        return to_route('posts.index')->with('success', 'Post deleted successfully.');
     }
 }

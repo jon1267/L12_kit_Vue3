@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,6 +25,8 @@ const form = useForm<PostForm>({
     image: null,
 });
 
+const imagePreview = ref<string | null>(null);
+
 const submit = () => {
     form.post(route('posts.store'));
 };
@@ -33,6 +36,7 @@ const handleImageInput = (event: Event) => {
     const file = target.files?.[0];
     if (file) {
         form.image = file;
+        imagePreview.value = URL.createObjectURL(file);
     } else {
         form.image = null;
     }
@@ -87,6 +91,7 @@ const handleImageInput = (event: Event) => {
                                         :tabindex="2"
                                         @change="handleImageInput"
                                     />
+                                    <img v-if="imagePreview" :src="imagePreview" alt="image preview" class="mt-2 w-21 h-21 object-cover" />
                                     <InputError :message="form.errors.image" />
                                 </div>
 
