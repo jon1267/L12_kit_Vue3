@@ -65,7 +65,7 @@ console.log(props.products);
                             <TableCell class="p-4">$ {{ product.price / 100 }}</TableCell>
                             <TableCell class="p-4">{{ product.weight }}</TableCell>
                             <TableCell class="p-4">
-                                <img class="w-20" :src="product.image_url" v-if="product.image_url">
+                                <img class="h-15 w-15 rounded object-cover" :src="product.image_url" v-if="product.image_url">
                             </TableCell>
                             <TableCell class="space-x-1">
                                 <Button variant="ghost"  size="icon" class="mr-2">

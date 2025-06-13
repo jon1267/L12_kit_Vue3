@@ -59,9 +59,13 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        //
+
+        //dd(new PostResource($post));
+        return Inertia::render('posts/Show', [
+            'post' => new PostResource($post),
+        ]);
     }
 
     /**
@@ -69,7 +73,6 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // time 29:30
         return Inertia::render('posts/Edit', [
             'currentPost' => new PostResource($post),
         ]);
