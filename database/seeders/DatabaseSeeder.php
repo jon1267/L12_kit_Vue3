@@ -22,5 +22,8 @@ class DatabaseSeeder extends Seeder
         //]);
 
         Product::factory()->count(30)->create();
+
+        // for Quiz generate 10 users && 10 stats records
+        //User::factory(10)->hasStats(10)->create();
     }
 }
