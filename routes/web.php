@@ -17,12 +17,14 @@ Route::get('dashboard', function () {
 Route::resource('products', ProductController::class)->middleware(['auth']);
 Route::resource('posts', PostController::class)->middleware(['auth']);
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('quiz', function () { return Inertia::render('quiz/Index'); })->name('quiz.index');
+    Route::get('quiz-stats', [StatController::class, 'index'] )->name('quiz.stats.index');
+    Route::post('quiz-stats', [StatController::class, 'store'] )->name('quiz.stats.store');
+    // time: 21:05 lesson 4 (create group && create)
+});
 
-Route::get('quiz', function () { return Inertia::render('quiz/Index'); })
-    ->middleware(['auth'])->name('quiz.index');
-Route::get('quiz-stats', [StatController::class, 'index'] )
-    ->middleware(['auth'])->name('quiz.stats');
-// time: 21:05 lesson 4 (create group && create)
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

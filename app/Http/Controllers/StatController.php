@@ -32,7 +32,11 @@ class StatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        auth()->user()->stats()->create([
+            'score' => $request->score * 10, // Assuming score is a percentage, multiply by 10 to get the score out of 100
+            'start_time' => now(),
+            'end_time' => now(),
+        ]);
     }
 
     /**

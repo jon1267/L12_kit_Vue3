@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 //import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 //import { toast } from 'vue-sonner';
 
 import Card from '@/components/ui/card/Card.vue';
@@ -20,6 +20,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const page = usePage();
+
 const questions = ref([]);
 const currentQuestionIndex = ref(0);
 const loading = ref(false);
@@ -29,6 +31,13 @@ const completed = ref(false);
 
 onMounted(() => {
     getQuestions()
+});
+
+const form = useForm({
+    id: '',
+    score: 0,
+    start_time: '',
+    end_time: '',
 });
 
 const currentQuestion = computed(() => {
@@ -52,8 +61,13 @@ const finalScore = computed(() => {
     return correctScore.value * 10;
 });
 
+// ??? Check if the quiz is completed
 const hasCompleted = computed(() => {
     return completed.value = true ? remainingCount.value <= 0 : remainingCount.value >= 0
+});
+
+const user = computed(() => {
+    return page.props.auth.user;
 });
 
 const getQuestions = async () => {
@@ -66,15 +80,13 @@ const getQuestions = async () => {
     console.log(resp.data);
 };
 
-const guess = (answer) => {
+const guess = (answer: any) => {
     if (currentQuestion.value.correctAnswer === answer) {
         correctScore.value++;
     } else {
         incorrectScore.value++;
     }
     currentQuestionIndex.value++;
-    //console.log(answer);
-
 };
 
 const resetQuiz = () => {
@@ -86,7 +98,24 @@ const resetQuiz = () => {
     getQuestions();
 };
 
-// Lesson 4 (from start)
+watch(currentQuestionIndex, (newIndex) => {
+    if (newIndex === 10) {
+        if (!user.value) {
+            stop();
+        } else {
+            submit();
+        }
+    }
+});
+
+const stop = () => {
+    form.score = correctScore.value;
+};
+
+const submit = () => {
+    stop();
+    form.post(route('quiz.stats.store'));
+};
 </script>
 
 <template>
