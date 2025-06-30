@@ -29,6 +29,12 @@ const correctScore = ref(0);
 const incorrectScore = ref(0);
 const completed = ref(false);
 
+const startTime = ref(0);
+const secs = ref(0);
+const seconds = ref('00');
+const minutes = ref('00');
+const timeInterval = ref(0);
+
 onMounted(() => {
     getQuestions()
 });
@@ -36,8 +42,8 @@ onMounted(() => {
 const form = useForm({
     id: '',
     score: 0,
-    start_time: '',
-    end_time: '',
+    startTime: '',
+    endTime: '',
 });
 
 const currentQuestion = computed(() => {
@@ -50,7 +56,6 @@ const randomAnswer = computed(() => {
         currentQuestion.value.correctAnswer,
         ...currentQuestion.value.incorrectAnswers
     ].sort((a,b) => a < b ? -1 : 1);
-    //.sort(() => Math.random() - 0.5);
 });
 
 const remainingCount = computed(() => {
@@ -95,10 +100,18 @@ const resetQuiz = () => {
     correctScore.value = 0;
     incorrectScore.value = 0;
     currentQuestionIndex.value = 0;
+    startTime.value = 0;
+    seconds.value = '00';
+    minutes.value = '00';
     getQuestions();
+    // time 26:00
 };
 
 watch(currentQuestionIndex, (newIndex) => {
+    if (newIndex === 1) {
+        start(); // Start the timer when the first question is answered
+    }
+
     if (newIndex === 10) {
         if (!user.value) {
             stop();
@@ -108,8 +121,21 @@ watch(currentQuestionIndex, (newIndex) => {
     }
 });
 
+const start = () => {
+    form.startTime = new Date();
+    startTime.value = Date.now(); //console.log(startTime.value);
+    timeInterval.value = setInterval(() => {
+        secs.value = Math.floor((Date.now() - startTime.value) / 1000); // console.log(secs.value);
+
+        seconds.value = `${parseInt(`${secs.value % 60}`, 10)}`.padStart(2, '0');
+        minutes.value = `${parseInt(`${secs.value / 60} % 60`, 10)}`.padStart(2, '0');
+
+    }, 1000);
+};
 const stop = () => {
+    clearInterval(timeInterval.value);
     form.score = correctScore.value;
+    form.endTime = new Date();
 };
 
 const submit = () => {
@@ -131,9 +157,13 @@ const submit = () => {
                     <CardHeader>
                         <CardTitle class="text-center">
                             <div class="flex justify-center text-xl space-x-5 mb-6">
-                                <div class="flex justify-between w-full">
+                                <div class="flex justify-center text-xl space-x-5 mb-6">
                                     <p>Duration:</p>
-                                    <p>00:00</p>
+                                    <!--<div>
+                                        <button @click.prevent="start" class="bg-green-500 p-1">Start</button>
+                                        <button @click.prevent="stop" class="bg-red-500 p-1 ml-2">Stop</button>
+                                    </div>-->
+                                    <p>{{ minutes }}:{{ seconds }}</p>
                                 </div>
                             </div>
 
@@ -193,12 +223,22 @@ const submit = () => {
                         <CardTitle class="text-center text-2xl">
                             <p>Congrats, here is your final score!</p>
                             <p>{{ finalScore }}%</p>
+                            <p class="mt-6">
+                                You finish in {{ minutes }}:{{ seconds }}
+                            </p>
                         </CardTitle>
                     </CardHeader>
                     <CardContent class="text-center">
                         <Button @click.prevent="resetQuiz" class="cursor-pointer">
                             Play Again!
                         </Button>
+                        <p class="text-xl mt-6" v-if="user">
+                            Go see your states on the Dashboard
+                        </p>
+                        <p class="text-xl mt-6" v-else>
+                            Stats are not saved unless you are
+                            <Link :href="route('login')" class="hover:text-blue-500 ">Logged In</Link>.
+                        </p>
                     </CardContent>
                 </Card>
             </div>
