@@ -104,7 +104,6 @@ const resetQuiz = () => {
     seconds.value = '00';
     minutes.value = '00';
     getQuestions();
-    // time 26:00
 };
 
 watch(currentQuestionIndex, (newIndex) => {
